@@ -1,86 +1,61 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import GridItem from './Components/GridItem'
 import BentoGrid from './Components/BentoGrid'
-import About from './Pages/About'
-
-/*
- *About
- *Experinece
- *Projects
- *Skills
- *Education
- *Resume
- *Contact
- *
-
-
-*/
+import GridItem from './Components/GridItem'
+import DetailModal from './Components/DetailModal'
+import Background from './Components/Background'
+import Scene3D from './Components/Scene3D'
+import { portfolioItems } from './data/portfolioData'
+import { motion } from 'framer-motion'
 
 function App() {
-
+  const [selectedId, setSelectedId] = useState(null)
 
   return (
-     <div className="min-h-screen w-full  bg-black ">
-      
-      <BentoGrid>
-        <GridItem title="About Me" className="col-start-1 col-end-3 row-start-1 row-end-6   font-serif ">
-          <About/>
-        </GridItem>
-         <GridItem title="Experience" className="col-start-3 col-end-5 row-start-1 row-end-4 bg-gray-900">
-          
-        </GridItem>
-        <GridItem title="Project" className="col-start-5 col-end-7 row-start-2 row-end-5 bg-gray-900">
-          
-        </GridItem>
-         <GridItem title="Skill" className="col-start-3 col-end-5 row-start-4 row-end-6 bg-gray-900">
-          
-        </GridItem>
-        <GridItem title="Education" className="col-start-3 col-end-5 row-start-6 row-end-7 bg-gray-900">
-          
-        </GridItem>
-        <GridItem title="Resume" className="col-start-5 col-end-7 row-start-1 row-end-2 bg-gray-900">
-          
-        </GridItem>
-        <GridItem title="Contact" className="col-start-5 col-end-7 row-start-5 row-end-7 bg-gray-900">
-          
-        </GridItem>
-        <GridItem title="Social" className="col-start-1 col-end-3 row-start-6 row-end-7 bg-gray-900">
-          
-        </GridItem>
+    <div className="min-h-screen w-full bg-[#0a0a0a] text-white relative selection:bg-blue-500/30">
+      <Background />
+      <Scene3D />
 
-        
+      <div className="relative z-10 container mx-auto px-4 py-12">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="mb-12 text-center"
+        >
+          <h1 className="text-5xl md:text-7xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500 mb-4">
+            Vipul Badwaik
+          </h1>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            Full Stack Developer & UI/UX Enthusiast
+          </p>
+        </motion.div>
 
+        <BentoGrid>
+          {portfolioItems.map((item, i) => (
+            <GridItem
+              key={item.id}
+              id={item.id}
+              title={item.title}
+              className={item.className}
+              onClick={() => setSelectedId(item.id)}
+            >
+              <div className="flex flex-col h-full justify-between">
+                <div className="mb-4">
+                  {item.icon}
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400 mb-2">{item.description}</p>
+                  {item.content}
+                </div>
+              </div>
+            </GridItem>
+          ))}
+        </BentoGrid>
 
-        {/* <GridItem title="Projects" className="col-span-3 row-span-2">
-          <ul className="list-disc pl-5">
-            <li>Password Strength Predictor</li>
-            <li>React Native Wallpaper App</li>
-            <li>DSA Tracker Tool</li>
-          </ul>
-        </GridItem> */}
-
-        {/* <GridItem title="Skills" className="col-span-2 row-span-1">
-          <p>React, JavaScript, Tailwind CSS, Node.js, Python, DSA</p>
-        </GridItem> */}
-
-       
-        {/* <GridItem title="Education" className="col-span-2">
-          <p>BTech in Computer Science, 2022</p>
-        </GridItem> */}
-
-        {/* <GridItem title="Resume" className="col-span-2">
-          <a href="#" className="text-blue-600 underline">Download Resume</a>
-        </GridItem> */}
-
-        {/* <GridItem title="Contact" className="col-span-2 row-span-2">
-          <p>Email: vipul@example.com</p>
-          <p>LinkedIn: /in/vipul</p>
-          <p>GitHub: /vipuldev</p>
-        </GridItem> */}
-      </BentoGrid>
+        <DetailModal selectedId={selectedId} setSelectedId={setSelectedId}>
+          {portfolioItems.find(item => item.id === selectedId)?.detailedContent}
+        </DetailModal>
+      </div>
     </div>
   )
 }

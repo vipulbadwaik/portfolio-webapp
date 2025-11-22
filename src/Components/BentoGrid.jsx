@@ -1,13 +1,30 @@
-// components/BentoGrid.jsx
 import React from 'react';
+import { cn } from '../lib/utils';
+import { motion } from 'framer-motion';
 
-//auto-rows-[minmax(100px,_auto)]
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
 
-const BentoGrid = ({ children }) => {
+const BentoGrid = ({ children, className }) => {
   return (
-    <div className="min-h-screen grid grid-cols-6 gap-4  p-4 grid-rows-6">
+    <motion.div 
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className={cn(
+        "grid grid-cols-1 md:grid-cols-6 lg:grid-cols-8 auto-rows-[minmax(180px,auto)] gap-4 max-w-7xl mx-auto p-4",
+        className
+      )}
+    >
       {children}
-    </div>
+    </motion.div>
   );
 };
 
