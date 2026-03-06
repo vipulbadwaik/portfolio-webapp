@@ -7,6 +7,7 @@ import Section from '../components/Section';
 import FadeIn from '../components/FadeIn';
 import { StaggerContainer, StaggerItem } from '../components/StaggerChildren';
 import TimelineDot from '../components/TimelineDot';
+import SkillCloud from '../components/SkillCloud';
 import { skills, experience, projects, education, socials } from '../data/portfolioData';
 
 export default function Home() {
@@ -58,15 +59,7 @@ export default function Home() {
 
           <FadeIn delay={0.1}>
             <Section id="skills" title="Tech Stack" icon={<Code className="w-4 h-4" />}>
-              <StaggerContainer className="flex flex-wrap gap-2">
-                {skills.map((skill) => (
-                  <StaggerItem key={skill}>
-                    <span className="inline-block px-3 py-1.5 text-sm text-gray-300 border border-white/10 rounded-lg hover:border-white/20 hover:text-white hover-scale transition-colors">
-                      {skill}
-                    </span>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
+              <SkillCloud skills={skills} />
             </Section>
           </FadeIn>
         </div>
@@ -139,21 +132,29 @@ export default function Home() {
       {/* Full-width screen-line divider */}
       <div className="screen-line h-3" />
 
-      {/* Education + Contact section */}
+      {/* Education section */}
+      <div className="border-b border-white/10">
+        <div className="max-w-3xl mx-auto border-x border-white/10 px-6 py-10 space-y-6">
+          <FadeIn>
+            <Section id="education" title="Education" icon={<GraduationCap className="w-4 h-4" />}>
+              <div>
+                <h3 className="text-white font-medium">{education.degree}</h3>
+                <p className="text-sm text-gray-500 mb-1">
+                  {education.field} &middot; {education.period}
+                </p>
+                <p className="text-sm text-gray-400">{education.description}</p>
+              </div>
+            </Section>
+          </FadeIn>
+        </div>
+      </div>
+
+      {/* Full-width screen-line divider */}
+      <div className="screen-line h-3" />
+
+      {/* Contact section */}
       <div className="max-w-3xl mx-auto border-x border-white/10 px-6 py-10 space-y-6">
         <FadeIn>
-          <Section id="education" title="Education" icon={<GraduationCap className="w-4 h-4" />}>
-            <div>
-              <h3 className="text-white font-medium">{education.degree}</h3>
-              <p className="text-sm text-gray-500 mb-1">
-                {education.field} &middot; {education.period}
-              </p>
-              <p className="text-sm text-gray-400">{education.description}</p>
-            </div>
-          </Section>
-        </FadeIn>
-
-        <FadeIn delay={0.1}>
           <Section id="contact" title="Contact" icon={<Mail className="w-4 h-4" />}>
             <div className="space-y-4">
               <p className="text-gray-300">
@@ -189,7 +190,7 @@ export default function Home() {
           </Section>
         </FadeIn>
 
-        <FadeIn delay={0.2}>
+        <FadeIn delay={0.1}>
           <footer className="pt-8 pb-6 text-center text-sm text-gray-600">
             &copy; {new Date().getFullYear()} Vipul Badwaik
           </footer>

@@ -1,4 +1,5 @@
 import { Inter, Outfit } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
 
 const inter = Inter({
@@ -27,6 +28,20 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-6W300NGV97"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-6W300NGV97');
+          `}
+        </Script>
+      </head>
       <body className="font-sans bg-[#0a0a0a] text-white antialiased selection:bg-blue-500/30">
         {children}
       </body>

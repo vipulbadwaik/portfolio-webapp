@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 
@@ -9,12 +9,14 @@ const navLinks = [
   { label: 'Skills', href: '#skills' },
   { label: 'Experience', href: '#experience' },
   { label: 'Projects', href: '#projects' },
+  { label: 'Education', href: '#education' },
   { label: 'Contact', href: '#contact' },
 ];
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const clickCooldown = useRef(false);
 
   // Scroll progress bar
   const { scrollYProgress } = useScroll();
@@ -24,21 +26,39 @@ const Header = () => {
     restDelta: 0.001,
   });
 
-  // Active section tracking via IntersectionObserver
+  // On nav click, set active immediately and pause scroll tracking
+  const handleNavClick = (sectionId) => {
+    setActiveSection(sectionId);
+    clickCooldown.current = true;
+    setTimeout(() => { clickCooldown.current = false; }, 1000);
+  };
+
+  // Scroll-based tracking for manual scrolling
   useEffect(() => {
     const sectionIds = navLinks.map((l) => l.href.slice(1));
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.find((e) => e.isIntersecting);
-        if (visible) setActiveSection(visible.target.id);
-      },
-      { rootMargin: '-50% 0px -50% 0px' }
-    );
-    sectionIds.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
+
+    const handleScroll = () => {
+      if (clickCooldown.current) return;
+
+      const scrollPos = window.scrollY + 120;
+      let active = '';
+
+      // Walk top-to-bottom: last section whose top has been scrolled past wins
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const sectionTop = el.getBoundingClientRect().top + window.scrollY;
+        if (sectionTop <= scrollPos) {
+          active = id;
+        }
+      }
+
+      setActiveSection(active);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
@@ -55,11 +75,12 @@ const Header = () => {
         </a>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-5">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
+              onClick={() => handleNavClick(link.href.slice(1))}
               className={`relative text-sm transition-colors ${
                 activeSection === link.href.slice(1)
                   ? 'text-white'
@@ -104,7 +125,7 @@ const Header = () => {
                 <a
                   key={link.href}
                   href={link.href}
-                  onClick={() => setMenuOpen(false)}
+                  onClick={() => { setMenuOpen(false); handleNavClick(link.href.slice(1)); }}
                   className="text-sm text-gray-400 hover:text-white transition-colors py-1.5"
                 >
                   {link.label}
