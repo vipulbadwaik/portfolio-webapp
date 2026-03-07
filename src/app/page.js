@@ -8,6 +8,8 @@ import FadeIn from '../components/FadeIn';
 import { StaggerContainer, StaggerItem } from '../components/StaggerChildren';
 import TimelineDot from '../components/TimelineDot';
 import SkillCloud from '../components/SkillCloud';
+import HeroAvatar from '../components/HeroAvatar';
+import ContactForm from '../components/ContactForm';
 import { skills, experience, projects, education, socials } from '../data/portfolioData';
 
 export default function Home() {
@@ -18,28 +20,33 @@ export default function Home() {
       {/* Hero cover with grid pattern — full width */}
       <div className="grid-pattern border-b border-white/10">
         <div className="max-w-3xl mx-auto border-x border-white/10 px-6 py-20 md:py-28">
-          <FadeIn direction="none" duration={0.6}>
-            <h1 className="text-4xl md:text-5xl font-display font-bold mb-3 text-shimmer">
-              Vipul Badwaik
-            </h1>
-          </FadeIn>
-          <FadeIn direction="none" delay={0.15} duration={0.6}>
-            <p className="text-lg text-gray-400 mb-4">
-              Full Stack Developer & UI/UX Enthusiast
-            </p>
-          </FadeIn>
-          <FadeIn direction="none" delay={0.3} duration={0.6}>
-            <div className="flex items-center gap-4 text-sm text-gray-500">
-              <span className="flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5" />
-                India
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-green-500 pulse-dot" />
-                Available for work
-              </span>
+          <div className="flex flex-col items-center md:flex-row md:items-center md:justify-between gap-6 md:gap-8">
+            <HeroAvatar />
+            <div className="text-center md:text-left md:order-first">
+              <FadeIn direction="none" duration={0.6}>
+                <h1 className="text-4xl md:text-5xl font-display font-bold mb-3 text-shimmer">
+                  Vipul Badwaik
+                </h1>
+              </FadeIn>
+              <FadeIn direction="none" delay={0.15} duration={0.6}>
+                <p className="text-lg text-gray-400 mb-4">
+                  Full Stack Developer & UI/UX Enthusiast
+                </p>
+              </FadeIn>
+              <FadeIn direction="none" delay={0.3} duration={0.6}>
+                <div className="flex items-center justify-center md:justify-start gap-4 text-sm text-gray-500">
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5" />
+                    India
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-green-500 pulse-dot" />
+                    Available for work
+                  </span>
+                </div>
+              </FadeIn>
             </div>
-          </FadeIn>
+          </div>
         </div>
       </div>
 
@@ -49,10 +56,7 @@ export default function Home() {
           <FadeIn>
             <Section id="about" title="About" icon={<User className="w-4 h-4" />}>
               <p className="text-gray-300 leading-relaxed">
-                I specialize in building high-quality web applications with modern technologies.
-                My journey involves deep diving into React, Next.js, Node.js, and creative coding.
-                I love experimenting with new libraries and frameworks to push the boundaries of
-                what&apos;s possible on the web.
+                I&apos;m a Frontend AI Engineer with 3+ years of experience building scalable web applications using React and TypeScript. I specialize in creating intuitive user interfaces and integrating AI-powered features into modern web products. My focus is on building performant, user-centric applications that seamlessly connect frontend systems with intelligent backend services. I&apos;m passionate about combining strong frontend engineering with AI capabilities to deliver smarter and more interactive digital experiences.
               </p>
             </Section>
           </FadeIn>
@@ -73,59 +77,44 @@ export default function Home() {
         <div className="max-w-3xl mx-auto border-x border-white/10 px-6 py-10 space-y-6">
           <FadeIn>
             <Section id="experience" title="Experience" icon={<Briefcase className="w-4 h-4" />}>
-              <StaggerContainer className="space-y-6">
-                {experience.map((job, i) => (
-                  <StaggerItem key={i}>
-                    <div className="flex gap-4">
-                      <div className="pt-1.5 flex flex-col items-center">
-                        <TimelineDot />
-                        {i < experience.length - 1 && (
-                          <div className="w-px flex-1 bg-white/10 mt-1" />
-                        )}
+              <div className="relative">
+                {/* Animated gradient timeline line */}
+                <div className="absolute left-[4px] top-3 bottom-3 w-px bg-gradient-to-b from-white/25 via-white/10 to-transparent timeline-glow" />
+
+                <StaggerContainer className="space-y-8">
+                  {experience.map((job, i) => (
+                    <StaggerItem key={i}>
+                      <div className="flex gap-4">
+                        <div className="pt-1.5 shrink-0 relative z-10">
+                          <TimelineDot isFirst={i === 0} />
+                        </div>
+                        <div className="pb-1 -mx-2 px-2 py-1 rounded-lg hover:bg-white/[0.03] transition-colors duration-300">
+                          <h3 className="text-white font-medium">{job.title}</h3>
+                          <p className="text-sm text-gray-500 mb-1">
+                            {job.company} &middot; {job.period}
+                          </p>
+                          {Array.isArray(job.description) ? (
+                            <ul className="text-sm text-gray-400 space-y-2 mt-1.5">
+                              {job.description.map((point, j) => (
+                                <li key={j} className="flex gap-2">
+                                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-white/30 shrink-0" />
+                                  <span>{point}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="text-sm text-gray-400">{job.description}</p>
+                          )}
+                        </div>
                       </div>
-                      <div className="pb-1">
-                        <h3 className="text-white font-medium">{job.title}</h3>
-                        <p className="text-sm text-gray-500 mb-1">
-                          {job.company} &middot; {job.period}
-                        </p>
-                        <p className="text-sm text-gray-400">{job.description}</p>
-                      </div>
-                    </div>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
+              </div>
             </Section>
           </FadeIn>
 
-          <FadeIn delay={0.1}>
-            <Section id="projects" title="Projects" icon={<Code className="w-4 h-4" />}>
-              <StaggerContainer className="space-y-4">
-                {projects.map((project, i) => (
-                  <StaggerItem key={i}>
-                    <a
-                      href={project.url}
-                      className="block p-4 -mx-2 rounded-xl hover:bg-white/5 hover-lift transition-colors group"
-                    >
-                      <div className="flex items-start justify-between mb-1">
-                        <h3 className="text-white font-medium group-hover:text-blue-400 transition-colors">
-                          {project.title}
-                        </h3>
-                        <ExternalLink className="w-4 h-4 text-gray-600 group-hover:text-gray-400 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all duration-200 shrink-0 mt-0.5" />
-                      </div>
-                      <p className="text-sm text-gray-400 mb-2">{project.description}</p>
-                      <div className="flex gap-2">
-                        {project.tags.map((tag) => (
-                          <span key={tag} className="text-xs text-gray-500">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </a>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-            </Section>
-          </FadeIn>
+          {/* Projects section hidden for now */}
         </div>
       </div>
 
@@ -140,9 +129,9 @@ export default function Home() {
               <div>
                 <h3 className="text-white font-medium">{education.degree}</h3>
                 <p className="text-sm text-gray-500 mb-1">
-                  {education.field} &middot; {education.period}
+                  {education.school} &middot; {education.period}
                 </p>
-                <p className="text-sm text-gray-400">{education.description}</p>
+                <p className="text-sm text-gray-400">{education.field} &middot; {education.description}</p>
               </div>
             </Section>
           </FadeIn>
@@ -156,36 +145,39 @@ export default function Home() {
       <div className="max-w-3xl mx-auto border-x border-white/10 px-6 py-10 space-y-6">
         <FadeIn>
           <Section id="contact" title="Contact" icon={<Mail className="w-4 h-4" />}>
-            <div className="space-y-4">
+            <div className="space-y-6">
               <p className="text-gray-300">
                 Feel free to reach out — I&apos;m always open to new opportunities and collaborations.
               </p>
-              <a
-                href="mailto:vipul@example.com"
-                className="inline-block text-sm text-blue-400 hover:text-blue-300 hover-underline transition-colors"
-              >
-                vipul@example.com
-              </a>
-              <StaggerContainer className="flex gap-3 pt-2">
-                {socials.map((social) => {
-                  const Icon = social.name === 'GitHub' ? Github
-                    : social.name === 'LinkedIn' ? Linkedin
-                    : Twitter;
-                  return (
-                    <StaggerItem key={social.name}>
-                      <a
-                        href={social.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2.5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-white/20 hover-scale transition-colors inline-block"
-                        aria-label={social.name}
-                      >
-                        <Icon className="w-4 h-4" />
-                      </a>
-                    </StaggerItem>
-                  );
-                })}
-              </StaggerContainer>
+              <ContactForm />
+              <div className="flex items-center gap-4 pt-2">
+                <a
+                  href="mailto:vipul.badwaik@gmail.com"
+                  className="text-sm text-gray-500 hover:text-white hover-underline transition-colors"
+                >
+                  vipul.badwaik@gmail.com
+                </a>
+                <StaggerContainer className="flex gap-3">
+                  {socials.map((social) => {
+                    const Icon = social.name === 'GitHub' ? Github
+                      : social.name === 'LinkedIn' ? Linkedin
+                      : Twitter;
+                    return (
+                      <StaggerItem key={social.name}>
+                        <a
+                          href={social.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2.5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-white/20 hover-scale transition-colors inline-block"
+                          aria-label={social.name}
+                        >
+                          <Icon className="w-4 h-4" />
+                        </a>
+                      </StaggerItem>
+                    );
+                  })}
+                </StaggerContainer>
+              </div>
             </div>
           </Section>
         </FadeIn>
