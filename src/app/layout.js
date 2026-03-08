@@ -13,15 +13,55 @@ const outfit = Outfit({
   weight: ['400', '600', '700'],
 });
 
+const SITE_URL = 'https://vipulbadwaik.in';
+
 export const metadata = {
+  metadataBase: new URL(SITE_URL),
   title: 'Vipul Badwaik — Full Stack Developer',
   description:
-    'Portfolio of Vipul Badwaik — Full Stack Developer & UI/UX Enthusiast specializing in React, Next.js, and modern web technologies.',
+    'Portfolio of Vipul Badwaik — Full Stack Developer & UI/UX Enthusiast specializing in React, Next.js, Node.js, and modern web technologies. Currently Frontend AI Engineer at Fundly.ai.',
+  keywords: [
+    'Vipul Badwaik',
+    'Full Stack Developer',
+    'Frontend Engineer',
+    'React Developer',
+    'Next.js',
+    'TypeScript',
+    'Node.js',
+    'Python',
+    'UI/UX',
+    'Portfolio',
+    'Software Engineer',
+    'India',
+  ],
+  authors: [{ name: 'Vipul Badwaik', url: SITE_URL }],
+  creator: 'Vipul Badwaik',
+  alternates: {
+    canonical: SITE_URL,
+  },
   openGraph: {
     title: 'Vipul Badwaik — Full Stack Developer',
     description:
       'Full Stack Developer & UI/UX Enthusiast specializing in React, Next.js, and modern web technologies.',
+    url: SITE_URL,
+    siteName: 'Vipul Badwaik',
+    locale: 'en_US',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Vipul Badwaik — Full Stack Developer',
+    description:
+      'Full Stack Developer & UI/UX Enthusiast specializing in React, Next.js, and modern web technologies.',
+    creator: '@VipulBadwaik',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
   },
 };
 
@@ -52,6 +92,50 @@ export default function RootLayout({ children }) {
         </Script>
       </head>
       <body className="font-sans bg-[#0a0a0a] text-white antialiased selection:bg-blue-500/30">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Person',
+              name: 'Vipul Badwaik',
+              url: SITE_URL,
+              image: `${SITE_URL}/avatar.png`,
+              jobTitle: 'Frontend AI Engineer',
+              worksFor: {
+                '@type': 'Organization',
+                name: 'Fundly.ai',
+              },
+              alumniOf: {
+                '@type': 'CollegeOrUniversity',
+                name: 'Rungta College of Engineering and Technology, Bhilai',
+              },
+              knowsAbout: [
+                'JavaScript',
+                'TypeScript',
+                'React',
+                'Next.js',
+                'Node.js',
+                'Python',
+                'Tailwind CSS',
+                'PostgreSQL',
+                'MongoDB',
+                'Docker',
+                'AWS',
+                'UI/UX Design',
+              ],
+              sameAs: [
+                'https://github.com/vipulbadwaik',
+                'https://www.linkedin.com/in/vipulbadwaik/',
+                'https://x.com/VipulBadwaik',
+              ],
+              address: {
+                '@type': 'PostalAddress',
+                addressCountry: 'IN',
+              },
+            }),
+          }}
+        />
         {children}
       </body>
     </html>
