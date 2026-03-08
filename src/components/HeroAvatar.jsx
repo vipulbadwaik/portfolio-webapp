@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 const HeroAvatar = () => {
@@ -78,9 +79,12 @@ const HeroAvatar = () => {
           transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           style={{ perspective: 800 }}
         >
-          <img
-            src="/avatar.png"
+          <Image
+            src="/avatar-optimized.jpg"
             alt="Vipul Badwaik"
+            width={192}
+            height={192}
+            priority
             className="w-full h-full object-cover object-top"
           />
 

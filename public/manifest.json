@@ -1,0 +1,21 @@
+{
+  "name": "Vipul Badwaik — Full Stack Developer",
+  "short_name": "Vipul Badwaik",
+  "description": "Portfolio of Vipul Badwaik — Full Stack Developer & UI/UX Enthusiast",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

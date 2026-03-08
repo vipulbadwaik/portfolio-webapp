@@ -15,8 +15,12 @@ import { skills, experience, projects, education, socials } from '../data/portfo
 export default function Home() {
   return (
     <>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:rounded-lg focus:text-sm">
+        Skip to main content
+      </a>
       <Header />
 
+      <main id="main-content">
       {/* Hero cover with grid pattern — full width */}
       <div className="grid-pattern border-b border-white/10 overflow-hidden">
         <div className="max-w-3xl mx-auto border-x border-white/10 px-6 py-20 md:py-28">
@@ -190,6 +194,7 @@ export default function Home() {
           </footer>
         </FadeIn>
       </div>
+      </main>
     </>
   );
 }
