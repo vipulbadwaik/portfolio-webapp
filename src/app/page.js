@@ -18,10 +18,12 @@ export default function Home() {
       <Header />
 
       {/* Hero cover with grid pattern — full width */}
-      <div className="grid-pattern border-b border-white/10">
+      <div className="grid-pattern border-b border-white/10 overflow-hidden">
         <div className="max-w-3xl mx-auto border-x border-white/10 px-6 py-20 md:py-28">
           <div className="flex flex-col items-center md:flex-row md:items-center md:justify-between gap-6 md:gap-8">
-            <HeroAvatar />
+            <div className="md:mr-12">
+              <HeroAvatar />
+            </div>
             <div className="text-center md:text-left md:order-first">
               <FadeIn direction="none" duration={0.6}>
                 <h1 className="text-4xl md:text-5xl font-display font-bold mb-3 text-shimmer">
