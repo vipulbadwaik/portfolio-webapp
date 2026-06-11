@@ -10,6 +10,7 @@ import TimelineDot from '../components/TimelineDot';
 import SkillCloud from '../components/SkillCloud';
 import HeroAvatar from '../components/HeroAvatar';
 import ContactForm from '../components/ContactForm';
+import Chatbot from '../components/Chatbot';
 import { skills, experience, projects, education, socials } from '../data/portfolioData';
 
 export default function Home() {
@@ -195,6 +196,8 @@ export default function Home() {
         </FadeIn>
       </div>
       </main>
+
+      <Chatbot />
     </>
   );
 }
