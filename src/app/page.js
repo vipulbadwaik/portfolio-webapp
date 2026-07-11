@@ -1,17 +1,18 @@
 import {
   User, Code, Briefcase, GraduationCap, Mail,
-  Github, Linkedin, Twitter, ExternalLink, MapPin,
+  Github, Linkedin, Twitter, ExternalLink, MapPin, FileText,
+  Sparkles, Zap, Layers,
 } from 'lucide-react';
 import Header from '../components/Header';
 import Section from '../components/Section';
 import FadeIn from '../components/FadeIn';
 import { StaggerContainer, StaggerItem } from '../components/StaggerChildren';
-import TimelineDot from '../components/TimelineDot';
+import ExperienceCard from '../components/ExperienceCard';
 import SkillCloud from '../components/SkillCloud';
 import HeroAvatar from '../components/HeroAvatar';
 import ContactForm from '../components/ContactForm';
 import Chatbot from '../components/Chatbot';
-import { skills, experience, projects, education, socials } from '../data/portfolioData';
+import { skills, experience, education, socials } from '../data/portfolioData';
 
 export default function Home() {
   return (
@@ -44,13 +45,40 @@ export default function Home() {
                 <div className="flex items-center justify-center md:justify-start gap-4 text-sm text-gray-500">
                   <span className="flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5" />
-                    India
+                    Mumbai, India
                   </span>
-                  <span className="flex items-center gap-1.5">
+                  <span className="group relative flex items-center gap-1.5 cursor-default">
                     <span className="w-2 h-2 rounded-full bg-green-500 pulse-dot" />
                     Available for work
+                    <div className="absolute left-1/2 top-full z-20 mt-3 w-72 -translate-x-1/2 origin-top scale-95 rounded-xl border border-white/10 bg-[#111] p-4 text-left shadow-xl opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 pointer-events-none">
+                      <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 rounded-[2px] border-l border-t border-white/10 bg-[#111]" />
+                      <p className="flex items-center gap-1.5 text-xs font-semibold text-white mb-2.5">
+                        <span>🟢</span> Open to new opportunities
+                      </p>
+                      <p className="flex items-center gap-1.5 text-xs text-gray-300 mb-3">
+                        <span>🌍</span> Remote — from anywhere
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {['Bangalore', 'Hyderabad', 'Gurgaon', 'Pune'].map((city) => (
+                          <span key={city} className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] text-gray-300">
+                            📍 {city}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   </span>
                 </div>
+              </FadeIn>
+              <FadeIn direction="none" delay={0.45} duration={0.6}>
+                <a
+                  href="https://drive.google.com/file/d/17Qz92-5K-ADO32iwSwDQP9La6eI39wsP/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 text-sm text-gray-300 hover:text-white hover:border-white/25 hover-lift transition-colors"
+                >
+                  <FileText className="w-4 h-4" />
+                  Resume
+                </a>
               </FadeIn>
             </div>
           </div>
@@ -62,9 +90,30 @@ export default function Home() {
         <div className="max-w-3xl mx-auto border-x border-white/10 px-6 py-10 space-y-6">
           <FadeIn>
             <Section id="about" title="About" icon={<User className="w-4 h-4" />}>
-              <p className="text-gray-300 leading-relaxed">
-                I&apos;m a Frontend AI Engineer with 3+ years of experience building scalable web applications using React and TypeScript. I specialize in creating intuitive user interfaces and integrating AI-powered features into modern web products. My focus is on building performant, user-centric applications that seamlessly connect frontend systems with intelligent backend services. I&apos;m passionate about combining strong frontend engineering with AI capabilities to deliver smarter and more interactive digital experiences.
-              </p>
+              <div className="space-y-5">
+                <p className="text-gray-300 leading-relaxed">
+                  I&apos;m a <span className="text-white font-medium">Frontend AI Engineer</span> with 3+ years of experience building scalable web applications using React and TypeScript — specializing in intuitive interfaces and AI-powered features that make modern web products smarter.
+                </p>
+                <p className="text-gray-400 leading-relaxed text-sm">
+                  My focus is on performant, user-centric applications that seamlessly connect frontend systems with intelligent backend services, combining strong engineering fundamentals with AI capabilities to deliver richer, more interactive digital experiences.
+                </p>
+                <StaggerContainer className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {[
+                    { icon: <Sparkles className="w-4 h-4" />, label: '3+ Years', sub: 'Experience' },
+                    { icon: <Code className="w-4 h-4" />, label: 'React & TS', sub: 'Core Stack' },
+                    { icon: <Zap className="w-4 h-4" />, label: 'AI-Powered', sub: 'Interfaces' },
+                    { icon: <Layers className="w-4 h-4" />, label: 'Full Stack', sub: 'Integration' },
+                  ].map((stat) => (
+                    <StaggerItem key={stat.label}>
+                      <div className="p-3 rounded-lg border border-white/10 hover-lift transition-colors text-center h-full">
+                        <div className="flex justify-center text-gray-400 mb-1.5">{stat.icon}</div>
+                        <p className="text-sm font-semibold text-white">{stat.label}</p>
+                        <p className="text-[11px] text-gray-500">{stat.sub}</p>
+                      </div>
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
+              </div>
             </Section>
           </FadeIn>
 
@@ -88,32 +137,10 @@ export default function Home() {
                 {/* Animated gradient timeline line */}
                 <div className="absolute left-[4px] top-3 bottom-3 w-px bg-gradient-to-b from-white/25 via-white/10 to-transparent timeline-glow" />
 
-                <StaggerContainer className="space-y-8">
+                <StaggerContainer className="space-y-6">
                   {experience.map((job, i) => (
                     <StaggerItem key={i}>
-                      <div className="flex gap-4">
-                        <div className="pt-1.5 shrink-0 relative z-10">
-                          <TimelineDot isFirst={i === 0} />
-                        </div>
-                        <div className="pb-1 -mx-2 px-2 py-1 rounded-lg hover:bg-white/[0.03] transition-colors duration-300">
-                          <h3 className="text-white font-medium">{job.title}</h3>
-                          <p className="text-sm text-gray-500 mb-1">
-                            {job.company} &middot; {job.period}
-                          </p>
-                          {Array.isArray(job.description) ? (
-                            <ul className="text-sm text-gray-400 space-y-2 mt-1.5">
-                              {job.description.map((point, j) => (
-                                <li key={j} className="flex gap-2">
-                                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-white/30 shrink-0" />
-                                  <span>{point}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p className="text-sm text-gray-400">{job.description}</p>
-                          )}
-                        </div>
-                      </div>
+                      <ExperienceCard job={job} index={i} />
                     </StaggerItem>
                   ))}
                 </StaggerContainer>
@@ -133,12 +160,24 @@ export default function Home() {
         <div className="max-w-3xl mx-auto border-x border-white/10 px-6 py-10 space-y-6">
           <FadeIn>
             <Section id="education" title="Education" icon={<GraduationCap className="w-4 h-4" />}>
-              <div>
-                <h3 className="text-white font-medium">{education.degree}</h3>
-                <p className="text-sm text-gray-500 mb-1">
-                  {education.school} &middot; {education.period}
-                </p>
-                <p className="text-sm text-gray-400">{education.field} &middot; {education.description}</p>
+              <div className="flex gap-4">
+                <div className="w-11 h-11 shrink-0 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center text-lg">
+                  🎓
+                </div>
+                <div className="flex-1 -mx-2 px-4 py-4 rounded-lg border border-white/10 hover:border-white/20 hover-lift bg-white/[0.015] transition-all duration-300">
+                  <h3 className="text-white font-medium">{education.degree}</h3>
+                  <p className="text-sm text-gray-500 mt-0.5 mb-2.5">
+                    🏫 {education.school} &middot; {education.period}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="px-2 py-0.5 rounded-md border border-white/10 text-[11px] text-gray-400">
+                      {education.field}
+                    </span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/20 text-[11px] font-medium text-green-400">
+                      🏆 {education.description}
+                    </span>
+                  </div>
+                </div>
               </div>
             </Section>
           </FadeIn>

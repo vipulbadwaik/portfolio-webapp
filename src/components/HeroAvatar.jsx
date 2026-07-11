@@ -70,7 +70,7 @@ const HeroAvatar = () => {
         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <motion.div
-          className="relative w-40 h-40 md:w-48 md:h-48 rounded-xl overflow-hidden border-2 border-white/15"
+          className="group relative w-40 h-40 md:w-48 md:h-48 rounded-xl overflow-hidden border-2 border-white/15"
           whileHover={{
             scale: 1.08,
             rotateY: 10,
@@ -80,7 +80,7 @@ const HeroAvatar = () => {
           style={{ perspective: 800 }}
         >
           <Image
-            src="/avatar-optimized.jpg"
+            src="/vipul.JPG"
             alt="Vipul Badwaik"
             width={192}
             height={192}
@@ -95,6 +95,13 @@ const HeroAvatar = () => {
             whileHover={{ x: '100%', opacity: 1 }}
             transition={{ duration: 0.6 }}
           />
+
+          {/* Caption shown on hover */}
+          <div className="absolute inset-x-0 bottom-0 px-2 py-2 bg-gradient-to-t from-black/85 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <p className="text-[11px] leading-tight text-white text-center font-medium">
+              Yep, that&apos;s me enjoying my Goa trip 🏖️ 2025
+            </p>
+          </div>
         </motion.div>
       </motion.div>
     </motion.div>

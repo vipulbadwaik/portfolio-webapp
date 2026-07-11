@@ -41,7 +41,6 @@ const skillsList = skills.join(', ');
 const topSkills = skills.slice(0, 5).join(', ');
 const currentRole = experience[0];
 const previousRole = experience[1];
-const projectNames = projects.map((p) => p.title).join(', ');
 const socialLinks = socials.map((s) => `${s.name}: ${s.url}`).join('\n');
 const linkedIn = socials.find((s) => s.name === 'LinkedIn')?.url || '';
 const github = socials.find((s) => s.name === 'GitHub')?.url || '';
