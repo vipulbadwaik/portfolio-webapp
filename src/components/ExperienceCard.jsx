@@ -26,9 +26,9 @@ const ExperienceCard = ({ job, index }) => {
       </div>
 
       <motion.div
-        whileHover={{ y: -3, borderColor: 'rgba(255,255,255,0.22)' }}
+        whileHover={{ y: -3 }}
         transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-        className="flex-1 -mx-2 px-4 py-4 rounded-lg border border-white/10 bg-white/[0.015]"
+        className="flex-1 -mx-2 px-4 py-4 rounded-lg"
       >
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 shrink-0 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center text-lg">
@@ -38,8 +38,9 @@ const ExperienceCard = ({ job, index }) => {
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-white font-medium">{job.title}</h3>
               {isFirst && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/20 text-[10px] font-medium text-green-400">
-                  🟢 Current
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/5 border border-white/15 text-[10px] font-medium text-gray-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/60 pulse-dot" />
+                  Current
                 </span>
               )}
             </div>

@@ -80,7 +80,7 @@ const HeroAvatar = () => {
           style={{ perspective: 800 }}
         >
           <Image
-            src="/vipul.JPG"
+            src="/vipul-optimized.jpg"
             alt="Vipul Badwaik"
             width={192}
             height={192}

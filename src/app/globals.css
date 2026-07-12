@@ -176,14 +176,3 @@ html {
   );
   animation: avatar-spin 6s linear infinite;
 }
-
-/* Timeline glow animation */
-@keyframes timeline-pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
-.timeline-glow {
-  animation: timeline-pulse 3s ease-in-out infinite;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.05);
-}

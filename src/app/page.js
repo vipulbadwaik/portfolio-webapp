@@ -8,8 +8,10 @@ import Section from '../components/Section';
 import FadeIn from '../components/FadeIn';
 import { StaggerContainer, StaggerItem } from '../components/StaggerChildren';
 import ExperienceCard from '../components/ExperienceCard';
+import ExperienceTimeline from '../components/ExperienceTimeline';
 import SkillCloud from '../components/SkillCloud';
 import HeroAvatar from '../components/HeroAvatar';
+import HeroTagline from '../components/HeroTagline';
 import ContactForm from '../components/ContactForm';
 import Chatbot from '../components/Chatbot';
 import { skills, experience, education, socials } from '../data/portfolioData';
@@ -37,9 +39,7 @@ export default function Home() {
                 </h1>
               </FadeIn>
               <FadeIn direction="none" delay={0.15} duration={0.6}>
-                <p className="text-lg text-gray-400 mb-4">
-                  Full Stack Developer & UI/UX Enthusiast
-                </p>
+                <HeroTagline />
               </FadeIn>
               <FadeIn direction="none" delay={0.3} duration={0.6}>
                 <div className="flex items-center justify-center md:justify-start gap-4 text-sm text-gray-500">
@@ -133,10 +133,7 @@ export default function Home() {
         <div className="max-w-3xl mx-auto border-x border-white/10 px-6 py-10 space-y-6">
           <FadeIn>
             <Section id="experience" title="Experience" icon={<Briefcase className="w-4 h-4" />}>
-              <div className="relative">
-                {/* Animated gradient timeline line */}
-                <div className="absolute left-[4px] top-3 bottom-3 w-px bg-gradient-to-b from-white/25 via-white/10 to-transparent timeline-glow" />
-
+              <ExperienceTimeline>
                 <StaggerContainer className="space-y-6">
                   {experience.map((job, i) => (
                     <StaggerItem key={i}>
@@ -144,7 +141,7 @@ export default function Home() {
                     </StaggerItem>
                   ))}
                 </StaggerContainer>
-              </div>
+              </ExperienceTimeline>
             </Section>
           </FadeIn>
 

@@ -36,10 +36,13 @@ scripts/
 
 - **Header.jsx** — sticky top nav, section-scroll links, mobile menu.
 - **HeroAvatar.jsx** — animated avatar in the hero section.
+- **HeroTagline.jsx** — GSAP-driven typewriter that types/deletes through a looping list of role phrases with a blinking cursor; skips to static text under `prefers-reduced-motion`/low-end devices.
 - **Section.jsx** — generic titled section wrapper (icon + heading + content) used by every page section.
 - **FadeIn.jsx** — Framer Motion wrapper for scroll/entry fade animations.
 - **StaggerChildren.jsx** — `StaggerContainer`/`StaggerItem` pair for staggered list/child animations.
 - **TimelineDot.jsx** — dot marker for the experience timeline.
+- **ExperienceTimeline.jsx** — wraps the Experience list; renders a static track + a Framer Motion `scaleY` fill line driven by `useScroll`/`useSpring`, so the rail visually fills as the section scrolls into view (replaces the old always-on gradient line).
+- **ExperienceCard.jsx** — per-role card (company emoji badge, tech tags, "Current" pill, staggered bullet list) with a Framer Motion hover lift.
 - **SkillCloud.jsx** — renders `skills` from `portfolioData.js` grouped into categories (Languages, Frontend, Backend, Tools & Cloud) as staggered icon+label chips.
 - **ContactForm.jsx** — client form; POSTs directly to Web3Forms (`https://api.web3forms.com/submit`) using `NEXT_PUBLIC_WEB3FORMS_KEY`. No backend involved.
 - **Chatbot.jsx** — floating chat widget (GSAP-animated bubble + panel). Calls `getResponse()` from `chatEngine.js` for replies; entirely client-side, no network call.
