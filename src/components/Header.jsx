@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 
@@ -15,8 +15,6 @@ const navLinks = [
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
-  const clickCooldown = useRef(false);
 
   // Scroll progress bar
   const { scrollYProgress } = useScroll();
@@ -25,41 +23,6 @@ const Header = () => {
     damping: 30,
     restDelta: 0.001,
   });
-
-  // On nav click, set active immediately and pause scroll tracking
-  const handleNavClick = (sectionId) => {
-    setActiveSection(sectionId);
-    clickCooldown.current = true;
-    setTimeout(() => { clickCooldown.current = false; }, 1000);
-  };
-
-  // Scroll-based tracking for manual scrolling
-  useEffect(() => {
-    const sectionIds = navLinks.map((l) => l.href.slice(1));
-
-    const handleScroll = () => {
-      if (clickCooldown.current) return;
-
-      const scrollPos = window.scrollY + 120;
-      let active = '';
-
-      // Walk top-to-bottom: last section whose top has been scrolled past wins
-      for (const id of sectionIds) {
-        const el = document.getElementById(id);
-        if (!el) continue;
-        const sectionTop = el.getBoundingClientRect().top + window.scrollY;
-        if (sectionTop <= scrollPos) {
-          active = id;
-        }
-      }
-
-      setActiveSection(active);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0a0a0a]/80 backdrop-blur-sm">
@@ -80,21 +43,9 @@ const Header = () => {
             <a
               key={link.href}
               href={link.href}
-              onClick={() => handleNavClick(link.href.slice(1))}
-              className={`relative text-sm transition-colors ${
-                activeSection === link.href.slice(1)
-                  ? 'text-white'
-                  : 'text-gray-400 hover:text-white'
-              }`}
+              className="relative text-sm text-gray-400 hover:text-white transition-colors"
             >
               {link.label}
-              {activeSection === link.href.slice(1) && (
-                <motion.span
-                  layoutId="nav-indicator"
-                  className="absolute -bottom-1 left-0 right-0 h-px bg-white"
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                />
-              )}
             </a>
           ))}
         </nav>
@@ -125,7 +76,7 @@ const Header = () => {
                 <a
                   key={link.href}
                   href={link.href}
-                  onClick={() => { setMenuOpen(false); handleNavClick(link.href.slice(1)); }}
+                  onClick={() => setMenuOpen(false)}
                   className="text-sm text-gray-400 hover:text-white transition-colors py-1.5"
                 >
                   {link.label}
