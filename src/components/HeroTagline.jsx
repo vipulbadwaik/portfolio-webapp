@@ -4,9 +4,9 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 
 const PHRASES = [
-  'Full Stack Developer & UI/UX Enthusiast',
-  'AI-Powered Product Builder',
-  'React · TypeScript · Node.js',
+  'AI-Native Software Engineer',
+  'Building with Agentic AI',
+  'React · TypeScript · Java',
 ];
 
 function prefersCalm() {
@@ -65,9 +65,9 @@ const HeroTagline = () => {
   }, []);
 
   return (
-    <p className="text-lg text-gray-400 mb-4 font-mono min-h-[1.75rem]">
+    <p className="text-[13px] sm:text-base text-gray-300 mb-5 font-mono min-h-[2.75rem] sm:min-h-[1.75rem]">
       <span ref={textRef} />
-      <span ref={cursorRef} className="inline-block text-white/70 ml-0.5">
+      <span ref={cursorRef} className="inline-block text-accent ml-0.5">
         |
       </span>
     </p>

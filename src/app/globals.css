@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@theme inline {
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-jakarta), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+  --color-accent: #8f8bff;
+  --color-accent-soft: #c4c2ff;
+}
+
 :root {
   --background: 240 10% 3.9%;
   --foreground: 0 0% 98%;
@@ -8,6 +16,7 @@
   --muted: 240 3.7% 15.9%;
   --muted-foreground: 240 5% 64.9%;
   --border: 240 3.7% 15.9%;
+  --accent: #8f8bff;
 }
 
 body {
@@ -15,12 +24,27 @@ body {
   color: hsl(var(--foreground));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow-x: clip;
+  line-height: 1.65;
+}
+
+::selection {
+  background: rgba(143, 139, 255, 0.3);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+h1, h2, h3 {
+  letter-spacing: -0.02em;
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -47,6 +71,34 @@ html {
     linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
   background-size: 32px 32px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 40%, #000 30%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 80% at 50% 40%, #000 30%, transparent 100%);
+}
+
+/* Soft accent glow behind the hero */
+.hero-glow {
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 0%, rgba(143, 139, 255, 0.18), transparent 70%),
+    radial-gradient(ellipse 40% 40% at 85% 80%, rgba(143, 139, 255, 0.07), transparent 70%);
+}
+
+/* Card surface: hairline border + faint top-edge highlight */
+.card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+  transition: border-color 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  border-color: rgba(143, 139, 255, 0.35);
+}
+
+/* Accent gradient text for big numbers */
+.text-accent-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Horizontal screen-line divider */
@@ -55,8 +107,8 @@ html {
     -45deg,
     transparent,
     transparent 4px,
-    rgba(255,255,255,0.06) 4px,
-    rgba(255,255,255,0.06) 5px
+    rgba(255,255,255,0.1) 4px,
+    rgba(255,255,255,0.1) 5px
   );
 }
 
@@ -67,7 +119,7 @@ html {
 
 .hover-lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.03);
+  box-shadow: 0 8px 30px rgba(143, 139, 255, 0.08);
 }
 
 /* Subtle scale for icon buttons */
@@ -124,41 +176,6 @@ html {
   animation: pulse-ring 2s ease-out infinite;
 }
 
-/* Hero name shimmer */
-@keyframes shimmer {
-  0% {
-    background-position: 200% center;
-  }
-  100% {
-    background-position: -200% center;
-  }
-}
-
-.text-shimmer {
-  background: linear-gradient(
-    90deg,
-    #ffffff 0%,
-    #ffffff 35%,
-    rgba(255, 255, 255, 0.4) 50%,
-    #ffffff 65%,
-    #ffffff 100%
-  );
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer 4s linear infinite;
-}
-
-/* Section icon spin on hover */
-.section-icon {
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.group:hover .section-icon {
-  transform: rotate(360deg);
-}
-
 /* Avatar rotating gradient ring */
 @keyframes avatar-spin {
   from { transform: rotate(0deg); }
@@ -169,10 +186,31 @@ html {
   background: conic-gradient(
     from 0deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.3) 25%,
+    var(--accent) 25%,
     transparent 50%,
-    rgba(255, 255, 255, 0.15) 75%,
+    rgba(255, 255, 255, 0.35) 75%,
     transparent 100%
   );
   animation: avatar-spin 6s linear infinite;
+}
+
+/* Floating astronaut: gentle zero-g bob + flickering jetpack flame */
+@keyframes astro-bob {
+  0%, 100% { transform: translateY(-2px); }
+  50% { transform: translateY(3px); }
+}
+@keyframes astro-flame {
+  0%, 100% { transform: scaleY(1); opacity: 0.9; }
+  50% { transform: scaleY(0.7); opacity: 0.6; }
+}
+
+.astro-bob { animation: astro-bob 3.2s ease-in-out infinite; }
+.astro-flame {
+  transform-origin: 17px 49px;
+  animation: astro-flame 0.18s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar-ring, .pulse-dot::before, .astro-bob, .astro-flame { animation: none; }
+  html { scroll-behavior: auto; }
 }

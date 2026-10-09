@@ -1,16 +1,23 @@
-import { Inter, Outfit } from 'next/font/google';
+import { Plus_Jakarta_Sans, Bricolage_Grotesque, JetBrains_Mono } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 
-const inter = Inter({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  variable: '--font-sans',
+  variable: '--font-jakarta',
+  display: 'swap',
 });
 
-const outfit = Outfit({
+const bricolage = Bricolage_Grotesque({
   subsets: ['latin'],
-  variable: '--font-display',
-  weight: ['400', '600', '700'],
+  variable: '--font-bricolage',
+  display: 'swap',
+});
+
+const jetbrains = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains',
+  display: 'swap',
 });
 
 const SITE_URL = 'https://vipulbadwaik.in';
@@ -19,7 +26,7 @@ export const metadata = {
   metadataBase: new URL(SITE_URL),
   title: 'Vipul Badwaik — Full Stack Developer',
   description:
-    'Portfolio of Vipul Badwaik — Full Stack Developer & UI/UX Enthusiast specializing in React, Next.js, Node.js, and modern web technologies. Currently Frontend AI Engineer at Fundly.ai.',
+    'Portfolio of Vipul Badwaik — Full Stack Developer & UI/UX Enthusiast specializing in React, Next.js, Node.js, and modern web technologies. Currently an AI-native Software Engineer at Fundly.ai.',
   keywords: [
     'Vipul Badwaik',
     'Full Stack Developer',
@@ -28,8 +35,8 @@ export const metadata = {
     'Next.js',
     'TypeScript',
     'Node.js',
-    'Python',
-    'UI/UX',
+    'Java',
+    'Redux',
     'Portfolio',
     'Software Engineer',
     'India',
@@ -80,7 +87,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
+    <html lang="en" className={`${jakarta.variable} ${bricolage.variable} ${jetbrains.variable}`}>
       <head>
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://www.clarity.ms" />
@@ -107,7 +114,7 @@ export default function RootLayout({ children }) {
           `}
         </Script>
       </head>
-      <body className="font-sans bg-[#0a0a0a] text-white antialiased selection:bg-blue-500/30">
+      <body className="font-sans bg-[#0a0a0a] text-white antialiased selection:bg-accent/30">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -117,7 +124,7 @@ export default function RootLayout({ children }) {
               name: 'Vipul Badwaik',
               url: SITE_URL,
               image: `${SITE_URL}/avatar.png`,
-              jobTitle: 'Frontend AI Engineer',
+              jobTitle: 'Software Engineer',
               worksFor: {
                 '@type': 'Organization',
                 name: 'Fundly.ai',
@@ -129,16 +136,15 @@ export default function RootLayout({ children }) {
               knowsAbout: [
                 'JavaScript',
                 'TypeScript',
+                'Java',
                 'React',
-                'Next.js',
+                'Redux',
                 'Node.js',
-                'Python',
-                'Tailwind CSS',
                 'PostgreSQL',
-                'MongoDB',
+                'Redis',
+                'Tailwind CSS',
                 'Docker',
-                'AWS',
-                'UI/UX Design',
+                'Agentic AI',
               ],
               sameAs: [
                 'https://github.com/vipulbadwaik',

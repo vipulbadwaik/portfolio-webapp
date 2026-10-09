@@ -21,7 +21,7 @@ const ExperienceTimeline = ({ children }) => {
       <div className="absolute left-[4px] top-3 bottom-3 w-px bg-white/10" />
       {/* Scroll-linked fill */}
       <motion.div
-        className="absolute left-[4px] top-3 bottom-3 w-px bg-white/60 origin-top"
+        className="absolute left-[4px] top-3 bottom-3 w-px bg-accent/70 origin-top"
         style={{ scaleY }}
       />
       {children}

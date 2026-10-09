@@ -3,77 +3,83 @@
 import {
   SiJavascript,
   SiTypescript,
+  SiOpenjdk,
+  SiCplusplus,
   SiReact,
-  SiNextdotjs,
-  SiNodedotjs,
-  SiPython,
+  SiRedux,
+  SiReactrouter,
+  SiHtml5,
+  SiCss,
   SiTailwindcss,
+  SiMui,
+  SiNodedotjs,
+  SiExpress,
   SiPostgresql,
+  SiMysql,
   SiMongodb,
+  SiRedis,
+  SiGit,
+  SiGithub,
+  SiWebpack,
+  SiBabel,
+  SiJest,
+  SiPostman,
   SiDocker,
-  SiFigma,
+  SiGithubactions,
 } from '@icons-pack/react-simple-icons';
-import { Cloud, Braces, MonitorSmartphone, Server } from 'lucide-react';
+import { Braces, MonitorSmartphone, Server, Database, Wrench, Webhook, FlaskConical } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { StaggerContainer, StaggerItem } from './StaggerChildren';
 
 const iconMap = {
   JavaScript: SiJavascript,
   TypeScript: SiTypescript,
-  React: SiReact,
-  'Next.js': SiNextdotjs,
-  'Node.js': SiNodedotjs,
-  Python: SiPython,
+  Java: SiOpenjdk,
+  'C++': SiCplusplus,
+  'React.js': SiReact,
+  Redux: SiRedux,
+  'React Router': SiReactrouter,
+  HTML5: SiHtml5,
+  CSS3: SiCss,
   'Tailwind CSS': SiTailwindcss,
+  'Material-UI': SiMui,
+  'Node.js': SiNodedotjs,
+  'Express.js': SiExpress,
+  'REST APIs': Webhook,
   PostgreSQL: SiPostgresql,
+  MySQL: SiMysql,
   MongoDB: SiMongodb,
+  Redis: SiRedis,
+  Git: SiGit,
+  GitHub: SiGithub,
+  Webpack: SiWebpack,
+  Babel: SiBabel,
+  Jest: SiJest,
+  Enzyme: FlaskConical,
+  Postman: SiPostman,
   Docker: SiDocker,
-  AWS: Cloud,
-  Figma: SiFigma,
-};
-
-const categoryMap = {
-  JavaScript: 'Languages',
-  TypeScript: 'Languages',
-  Python: 'Languages',
-  React: 'Frontend',
-  'Next.js': 'Frontend',
-  'Tailwind CSS': 'Frontend',
-  'Node.js': 'Backend',
-  PostgreSQL: 'Backend',
-  MongoDB: 'Backend',
-  Docker: 'Tools & Cloud',
-  AWS: 'Tools & Cloud',
-  Figma: 'Tools & Cloud',
+  'GitHub Actions': SiGithubactions,
 };
 
 const categoryIcons = {
   Languages: Braces,
   Frontend: MonitorSmartphone,
   Backend: Server,
-  'Tools & Cloud': Cloud,
+  'Databases & Caching': Database,
+  'Tools & Testing': Wrench,
 };
 
-const categoryOrder = ['Languages', 'Frontend', 'Backend', 'Tools & Cloud'];
-
-const SkillCloud = ({ skills }) => {
-  const grouped = categoryOrder
-    .map((category) => ({
-      category,
-      items: skills.filter((skill) => (categoryMap[skill] || 'Tools & Cloud') === category),
-    }))
-    .filter((group) => group.items.length > 0);
-
+const SkillCloud = ({ groups }) => {
   return (
     <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      {grouped.map((group) => {
-        const CategoryIcon = categoryIcons[group.category] || Cloud;
+      {groups.map((group) => {
+        const CategoryIcon = categoryIcons[group.category] || Wrench;
         return (
-          <StaggerItem key={group.category}>
-            <div className="h-full p-4 rounded-lg border border-white/10 hover-lift transition-colors">
-              <div className="group flex items-center gap-2 mb-3">
-                <CategoryIcon className="w-4 h-4 text-gray-500 section-icon" />
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+          <StaggerItem key={group.category} className="last:odd:sm:col-span-2">
+            <div className="card h-full p-4 rounded-xl hover-lift">
+              <div className="flex items-center gap-2 mb-3">
+                <CategoryIcon className="w-4 h-4 text-accent" />
+                <p className="font-mono text-xs font-medium uppercase tracking-wider text-gray-400">
                   {group.category}
                 </p>
               </div>
@@ -85,10 +91,13 @@ const SkillCloud = ({ skills }) => {
                       key={skill}
                       whileHover={{ scale: 1.06, y: -2 }}
                       transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-                      className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-white/10 text-gray-300 hover:text-white hover:border-white/25 hover:bg-white/5 transition-colors duration-200"
+                      className="group/skill flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-white/10 text-gray-200 hover:text-white hover:border-accent/40 hover:bg-accent/10 transition-colors duration-200"
                     >
                       {Icon && (
-                        <Icon size={15} className="text-gray-500 group-hover:text-white section-icon" />
+                        <Icon
+                          size={15}
+                          className="text-gray-400 transition-all duration-200 group-hover/skill:text-accent group-hover/skill:scale-125"
+                        />
                       )}
                       <span className="text-sm">{skill}</span>
                     </motion.div>
