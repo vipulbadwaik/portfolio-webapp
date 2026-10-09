@@ -26,7 +26,6 @@ const ExperienceCard = ({ job, index }) => {
   const tags = job.tags || [];
   const points = Array.isArray(job.description) ? job.description : [job.description];
   const collapsible = points.length > VISIBLE_POINTS;
-  const shown = expanded || !collapsible ? points : points.slice(0, VISIBLE_POINTS);
 
   return (
     <div className="flex gap-3 sm:gap-4">
@@ -88,8 +87,9 @@ const ExperienceCard = ({ job, index }) => {
         )}
 
         <ul className="text-sm text-gray-300 leading-relaxed space-y-2.5 mt-4">
-          {shown.map((point, j) => (
-            <li key={j} className="flex gap-3">
+          {/* All bullets stay in the DOM (crawlers/AI read them); extras are just visually hidden until expanded. */}
+          {points.map((point, j) => (
+            <li key={j} className={`flex gap-3 ${collapsible && !expanded && j >= VISIBLE_POINTS ? 'hidden' : ''}`}>
               <span className="mt-[0.6rem] w-1 h-1 rounded-full bg-accent shrink-0" />
               <span>{renderRich(point)}</span>
             </li>

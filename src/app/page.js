@@ -18,6 +18,7 @@ import CopyEmail from '../components/CopyEmail';
 import Chatbot from '../components/Chatbot';
 import Astronaut from '../components/Astronaut';
 import Walker from '../components/Walker';
+import { RESUME_URL } from '../lib/site';
 import { skillGroups, experience, education, socials } from '../data/portfolioData';
 
 const stats = [
@@ -84,7 +85,7 @@ export default function Home() {
               <FadeIn direction="none" delay={0.45} duration={0.6}>
                 <div className="mt-7 flex flex-col sm:flex-row items-stretch sm:items-center justify-center md:justify-start gap-3">
                   <a
-                    href="https://drive.google.com/file/d/17Qz92-5K-ADO32iwSwDQP9La6eI39wsP/view?usp=sharing"
+                    href={RESUME_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-accent-soft hover-lift transition-colors"
@@ -237,7 +238,7 @@ export default function Home() {
                     <a
                       href={social.url}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="me noopener noreferrer"
                       className="p-3 border border-white/10 rounded-lg text-gray-300 hover:text-accent hover:border-accent/40 hover-scale transition-colors inline-block"
                       aria-label={social.name}
                     >

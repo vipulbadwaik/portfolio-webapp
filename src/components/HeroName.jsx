@@ -34,6 +34,8 @@ const HeroName = ({ className }) => {
       initial={reduceMotion ? 'show' : 'hidden'}
       animate="show"
     >
+      {/* Plain-text copy for crawlers and screen readers; the animated letters below are decorative. */}
+      <span className="sr-only">{fullName}</span>
       {WORDS.map((word, wi) => (
         <span key={word.text} aria-hidden="true">
           <span className={`inline-block whitespace-nowrap ${word.className}`}>

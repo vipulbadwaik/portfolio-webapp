@@ -37,79 +37,55 @@ async function generateOGImage() {
   const width = 1200;
   const height = 630;
 
-  // Resize avatar to a circle-ready size
-  const avatarSize = 200;
-  const avatarBuf = await sharp(avatarPath)
-    .resize(avatarSize, avatarSize, { fit: 'cover', position: 'top' })
-    .png()
-    .toBuffer();
-
-  // Create circular mask
-  const circleMask = Buffer.from(
-    `<svg width="${avatarSize}" height="${avatarSize}">
-      <circle cx="${avatarSize / 2}" cy="${avatarSize / 2}" r="${avatarSize / 2}" fill="white"/>
-    </svg>`
+  // Photo: rounded square on the right with a violet ring
+  const size = 320;
+  const photoX = 770;
+  const photoY = Math.round((height - size) / 2);
+  const radius = 40;
+  const photoMask = Buffer.from(
+    `<svg width="${size}" height="${size}"><rect width="${size}" height="${size}" rx="${radius}" fill="white"/></svg>`
   );
-
-  const circularAvatar = await sharp(avatarBuf)
-    .composite([{ input: circleMask, blend: 'dest-in' }])
+  const photo = await sharp(path.join(publicDir, 'vipul-optimized.jpg'))
+    .resize(size, size, { fit: 'cover', position: 'top' })
+    .composite([{ input: photoMask, blend: 'dest-in' }])
     .png()
     .toBuffer();
 
-  // Create OG image with gradient background + text + avatar
-  const svgOverlay = `
-    <svg width="${width}" height="${height}">
+  const svg = `
+    <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#0a0a0a"/>
-          <stop offset="50%" style="stop-color:#111111"/>
-          <stop offset="100%" style="stop-color:#0a0a0a"/>
-        </linearGradient>
-        <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.1"/>
-          <stop offset="50%" style="stop-color:#ffffff;stop-opacity:0.05"/>
-          <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.1"/>
-        </linearGradient>
+        <radialGradient id="glow" cx="50%" cy="0%" r="75%">
+          <stop offset="0%" stop-color="#8f8bff" stop-opacity="0.28"/>
+          <stop offset="100%" stop-color="#8f8bff" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="glow2" cx="85%" cy="80%" r="40%">
+          <stop offset="0%" stop-color="#8f8bff" stop-opacity="0.14"/>
+          <stop offset="100%" stop-color="#8f8bff" stop-opacity="0"/>
+        </radialGradient>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M40 0H0V40" fill="none" stroke="rgba(255,255,255,0.045)" stroke-width="1"/>
+        </pattern>
       </defs>
+      <rect width="${width}" height="${height}" fill="#0a0a0a"/>
+      <rect width="${width}" height="${height}" fill="url(#grid)"/>
+      <rect width="${width}" height="${height}" fill="url(#glow)"/>
+      <rect width="${width}" height="${height}" fill="url(#glow2)"/>
+      <rect x="1" y="1" width="${width - 2}" height="${height - 2}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
 
-      <!-- Background -->
-      <rect width="${width}" height="${height}" fill="url(#bg)"/>
+      <!-- Photo ring -->
+      <rect x="${photoX - 8}" y="${photoY - 8}" width="${size + 16}" height="${size + 16}" rx="${radius + 8}" fill="none" stroke="#8f8bff" stroke-opacity="0.55" stroke-width="2"/>
 
-      <!-- Subtle grid pattern -->
-      <line x1="0" y1="210" x2="${width}" y2="210" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-      <line x1="0" y1="420" x2="${width}" y2="420" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-      <line x1="400" y1="0" x2="400" y2="${height}" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-      <line x1="800" y1="0" x2="800" y2="${height}" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <text x="80" y="255" font-family="system-ui, -apple-system, sans-serif" font-size="84" font-weight="700" fill="white">Vipul <tspan fill="#8f8bff">Badwaik</tspan></text>
+      <text x="82" y="322" font-family="system-ui, -apple-system, sans-serif" font-size="36" fill="rgba(255,255,255,0.82)">AI-Native Software Engineer</text>
+      <text x="82" y="376" font-family="ui-monospace, Menlo, monospace" font-size="22" fill="rgba(255,255,255,0.5)">React  ·  TypeScript  ·  Java  ·  Fintech</text>
 
-      <!-- Border -->
-      <rect x="0" y="0" width="${width}" height="${height}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
-
-      <!-- Top accent line -->
-      <rect x="0" y="0" width="${width}" height="3" fill="url(#accent)"/>
-
-      <!-- Name -->
-      <text x="600" y="240" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="56" font-weight="700" fill="white">
-        Vipul Badwaik
-      </text>
-
-      <!-- Title -->
-      <text x="600" y="300" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="26" fill="rgba(255,255,255,0.6)">
-        Full Stack Developer &amp; UI/UX Enthusiast
-      </text>
-
-      <!-- Skills -->
-      <text x="600" y="360" text-anchor="middle" font-family="system-ui, monospace" font-size="16" fill="rgba(255,255,255,0.35)">
-        React  ·  Next.js  ·  TypeScript  ·  Node.js  ·  Python  ·  AWS
-      </text>
-
-      <!-- Domain -->
-      <text x="600" y="560" text-anchor="middle" font-family="system-ui, monospace" font-size="18" fill="rgba(255,255,255,0.3)">
-        vipulbadwaik.in
-      </text>
+      <rect x="82" y="520" width="8" height="8" rx="4" fill="#8f8bff"/>
+      <text x="104" y="529" font-family="ui-monospace, Menlo, monospace" font-size="22" fill="rgba(255,255,255,0.55)">vipulbadwaik.in</text>
     </svg>
   `;
 
-  await sharp(Buffer.from(svgOverlay))
+  await sharp(Buffer.from(svg))
+    .composite([{ input: photo, left: photoX, top: photoY }])
     .png()
     .toFile(path.join(publicDir, 'og-image.png'));
 
@@ -131,8 +107,17 @@ async function compressAvatar() {
   console.log(`avatar-optimized.jpg: ${(origSize / 1024).toFixed(0)}KB → ${(newSize / 1024).toFixed(0)}KB`);
 }
 
-await generateFavicon();
-await generateAppleTouchIcon();
-await generateOGImage();
-await compressAvatar();
-console.log('\nAll assets generated in public/');
+// Usage: `node scripts/generate-assets.mjs` (everything) or `node scripts/generate-assets.mjs og` (share image only)
+const only = process.argv[2];
+if (!only || only === 'all') {
+  await generateFavicon();
+  await generateAppleTouchIcon();
+  await generateOGImage();
+  await compressAvatar();
+  console.log('\nAll assets generated in public/');
+} else if (only === 'og') {
+  await generateOGImage();
+} else {
+  console.error(`Unknown target "${only}". Use "og" or "all".`);
+  process.exit(1);
+}
