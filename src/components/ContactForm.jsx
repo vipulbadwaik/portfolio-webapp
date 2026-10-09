@@ -4,8 +4,6 @@ import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Send, Loader2, CheckCircle } from 'lucide-react';
 
-const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
-
 const ContactForm = () => {
   const formRef = useRef(null);
   const [sending, setSending] = useState(false);
@@ -18,20 +16,20 @@ const ContactForm = () => {
     setError('');
 
     const formData = new FormData(formRef.current);
-    formData.append('access_key', WEB3FORMS_KEY);
 
     try {
-      const res = await fetch('https://api.web3forms.com/submit', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(formData)),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
-      if (data.success) {
+      if (res.ok && data.success) {
         setSent(true);
         formRef.current.reset();
       } else {
-        setError('Failed to send message. Please try again.');
+        setError(data.error || 'Failed to send message. Please try again.');
       }
     } catch {
       setError('Failed to send message. Please try again.');
@@ -52,7 +50,7 @@ const ContactForm = () => {
         <p className="text-sm text-gray-400">Thanks for reaching out. I&apos;ll get back to you soon.</p>
         <button
           onClick={() => setSent(false)}
-          className="mt-2 text-sm text-gray-500 hover:text-white transition-colors"
+          className="mt-2 text-sm text-gray-400 hover:text-white transition-colors"
         >
           Send another message
         </button>
@@ -61,7 +59,16 @@ const ContactForm = () => {
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+    <form ref={formRef} onSubmit={handleSubmit} className="relative space-y-4">
+      {/* Honeypot — hidden from users, bots tend to fill it */}
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute -left-[9999px] h-0 w-0 opacity-0"
+      />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <input
@@ -69,7 +76,7 @@ const ContactForm = () => {
             name="name"
             required
             placeholder="Name"
-            className="w-full px-3 py-2.5 text-sm bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white/25 transition-colors"
+            className="w-full px-3.5 py-3 text-base sm:text-sm bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-accent/60 focus:ring-2 focus:ring-accent/20 transition"
           />
         </div>
         <div>
@@ -78,7 +85,7 @@ const ContactForm = () => {
             name="email"
             required
             placeholder="Email"
-            className="w-full px-3 py-2.5 text-sm bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white/25 transition-colors"
+            className="w-full px-3.5 py-3 text-base sm:text-sm bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-accent/60 focus:ring-2 focus:ring-accent/20 transition"
           />
         </div>
       </div>
@@ -86,9 +93,10 @@ const ContactForm = () => {
         <textarea
           name="message"
           required
+          maxLength={5000}
           rows={4}
           placeholder="Your message..."
-          className="w-full px-3 py-2.5 text-sm bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-white/25 transition-colors resize-none"
+          className="w-full px-3.5 py-3 text-base sm:text-sm bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-accent/60 focus:ring-2 focus:ring-accent/20 transition resize-none"
         />
       </div>
 
@@ -97,7 +105,7 @@ const ContactForm = () => {
       <button
         type="submit"
         disabled={sending}
-        className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-black bg-white rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-medium text-black bg-white rounded-lg hover:bg-accent-soft disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {sending ? (
           <>
