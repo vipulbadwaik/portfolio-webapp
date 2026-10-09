@@ -2,18 +2,46 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
-import { MessageCircle, X, Send } from 'lucide-react';
+import { MessageCircle, X, Send, RotateCcw } from 'lucide-react';
 import { getResponse } from '../lib/chatEngine';
+import ChatMarkdown from './ChatMarkdown';
 
 const INITIAL_MESSAGE = {
   id: 'welcome',
-  text: "Hey! I'm Vipul's AI assistant. Ask me anything about his skills, experience, or projects!",
+  text: "Hey! I'm Vipul's AI assistant. Ask me anything about his work, skills or availability — I know his resume inside out.",
   sender: 'bot',
   suggestions: [
-    'What tech stack does Vipul use?',
-    'Tell me about his experience',
+    'What did he build at Fundly?',
+    'What tech stack does he use?',
     'Is he available for work?',
   ],
+};
+
+const STORAGE_KEY = 'vb-chat-v1';
+const MAX_STORED = 30;
+
+// Follow-up chips based on what the visitor just asked about.
+const TOPIC_SUGGESTIONS = [
+  { re: /fundly|current|onboarding|sdk|payment|crm/i, chips: ['What was the impact of his work?', 'What tech does he use at Fundly?', 'How can I contact him?'] },
+  { re: /capgemini|previous|testing|jest/i, chips: ['Tell me about his current role', 'What are his skills?', 'How can I contact him?'] },
+  { re: /skill|tech|stack|java|react|language/i, chips: ['Tell me about his experience', 'Does he work with AI?', 'Is he available for work?'] },
+  { re: /education|college|degree|gate|cgpa/i, chips: ['Tell me about his experience', 'What are his skills?', 'Is he available for work?'] },
+  { re: /contact|email|hire|available|reach|resume/i, chips: ['What are his skills?', 'Tell me about his experience', 'Where is he based?'] },
+  { re: /\bai\b|agentic|llm/i, chips: ['What did he build at Fundly?', 'What tech stack does he use?', 'Is he available for work?'] },
+];
+const DEFAULT_CHIPS = ['What did he build at Fundly?', 'What tech stack does he use?', 'Is he available for work?'];
+
+const suggestFor = (question) =>
+  (TOPIC_SUGGESTIONS.find((t) => t.re.test(question)) || { chips: DEFAULT_CHIPS }).chips;
+
+const loadStored = () => {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : null;
+    return Array.isArray(parsed) && parsed.length ? parsed : null;
+  } catch {
+    return null;
+  }
 };
 
 const nextId = () => `msg-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -33,6 +61,7 @@ export default function Chatbot() {
   const floatTween = useRef(null);
   const pulseTween = useRef(null);
   const typingDotsRef = useRef(null);
+  const isStreaming = useRef(false);
 
   // ----- Bubble floating + pulse animation -----
   useEffect(() => {
@@ -63,10 +92,20 @@ export default function Chatbot() {
 
   // ----- (body scroll lock removed — panel is no longer full-screen) -----
 
+  // ----- Persist conversation for this tab session -----
+  useEffect(() => {
+    if (!hasOpened || isStreaming.current) return;
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-MAX_STORED)));
+    } catch {
+      /* storage unavailable — chat still works */
+    }
+  }, [messages, hasOpened, isTyping]);
+
   // ----- Scroll to bottom on new messages -----
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      messagesEndRef.current.scrollIntoView({ behavior: isStreaming.current ? 'auto' : 'smooth' });
     }
   }, [messages, isTyping]);
 
@@ -120,7 +159,7 @@ export default function Chatbot() {
 
     if (!hasOpened) {
       setHasOpened(true);
-      setMessages([INITIAL_MESSAGE]);
+      setMessages(loadStored() || [INITIAL_MESSAGE]);
     }
 
     // Kill bubble animations while open
@@ -166,45 +205,89 @@ export default function Chatbot() {
     });
   }, []);
 
+  // ----- Clear conversation -----
+  const clearChat = useCallback(() => {
+    try {
+      sessionStorage.removeItem(STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
+    setMessages([INITIAL_MESSAGE]);
+    inputRef.current?.focus();
+  }, []);
+
   // ----- Send message -----
   const sendMessage = useCallback(
     async (text) => {
-      const trimmed = (text || '').trim();
+      const trimmed = (text || '').trim().slice(0, 500);
       if (!trimmed || isTyping) return;
 
       const userMsg = { id: nextId(), text: trimmed, sender: 'user' };
+      const history = [...messages, userMsg]
+        .filter((m) => m.id !== 'welcome')
+        .map((m) => ({ role: m.sender === 'user' ? 'user' : 'assistant', content: m.text }));
+
       setMessages((prev) => [...prev, userMsg]);
       setInputValue('');
       setIsTyping(true);
 
-      // Simulated delay for realism
-      const delay = 300 + Math.random() * 500;
-      await new Promise((r) => setTimeout(r, delay));
+      const botId = nextId();
+      let started = false;
+      isStreaming.current = true;
 
       try {
-        const response = await getResponse(trimmed);
-        const botMsg = {
-          id: nextId(),
-          text: response.text || response,
-          sender: 'bot',
-          suggestions: response.suggestions || [],
-        };
-        setMessages((prev) => [...prev, botMsg]);
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: history }),
+        });
+
+        if (res.status === 429) {
+          const data = await res.json().catch(() => ({}));
+          setMessages((prev) => [
+            ...prev,
+            { id: botId, sender: 'bot', text: data.error || 'Too many messages — please try again in a few minutes.', suggestions: [] },
+          ]);
+          return;
+        }
+        if (!res.ok || !res.body) throw new Error(`chat ${res.status}`);
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let full = '';
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          full += decoder.decode(value, { stream: true });
+          if (!full.trim()) continue;
+          if (!started) {
+            started = true;
+            setIsTyping(false);
+            setMessages((prev) => [...prev, { id: botId, sender: 'bot', text: full, suggestions: [] }]);
+          } else {
+            setMessages((prev) => prev.map((m) => (m.id === botId ? { ...m, text: full } : m)));
+          }
+        }
+        if (!started) throw new Error('empty reply');
+        isStreaming.current = false;
+        setMessages((prev) =>
+          prev.map((m) => (m.id === botId ? { ...m, suggestions: suggestFor(trimmed) } : m)),
+        );
       } catch {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: nextId(),
-            text: "Sorry, something went wrong. Please try again!",
-            sender: 'bot',
-            suggestions: [],
-          },
-        ]);
+        // AI unavailable (offline, quota, misconfigured) — fall back to the built-in local engine.
+        if (!started) {
+          const response = getResponse(trimmed);
+          setMessages((prev) => [
+            ...prev,
+            { id: botId, sender: 'bot', text: response.text, suggestions: response.suggestions || [] },
+          ]);
+        }
       } finally {
+        isStreaming.current = false;
         setIsTyping(false);
       }
     },
-    [isTyping]
+    [isTyping, messages],
   );
 
   const handleSubmit = (e) => {
@@ -243,18 +326,29 @@ export default function Chatbot() {
           >
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-green-500" />
-              <span className="text-sm font-medium text-white">
-                Chat with Vipul&apos;s AI
+              <span className="font-display text-sm font-semibold text-white">
+                Ask Vipul&apos;s AI
               </span>
             </div>
-            <button
-              onClick={closePanel}
-              className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
-              aria-label="Close chat"
-              style={{ minWidth: 44, minHeight: 44 }}
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center">
+              <button
+                onClick={clearChat}
+                className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                aria-label="Clear conversation"
+                title="Clear conversation"
+                style={{ minWidth: 44, minHeight: 44 }}
+              >
+                <RotateCcw className="w-4 h-4 mx-auto" />
+              </button>
+              <button
+                onClick={closePanel}
+                className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                aria-label="Close chat"
+                style={{ minWidth: 44, minHeight: 44 }}
+              >
+                <X className="w-5 h-5 mx-auto" />
+              </button>
+            </div>
           </div>
 
           {/* Messages */}
@@ -266,11 +360,11 @@ export default function Chatbot() {
                   className={`max-w-[85%] px-3.5 py-2.5 text-sm leading-relaxed rounded-2xl whitespace-pre-wrap break-words ${
                     msg.sender === 'bot'
                       ? 'bg-white/[0.06] text-gray-200 rounded-bl-sm mr-auto'
-                      : 'bg-white/[0.12] text-white rounded-br-sm ml-auto'
+                      : 'bg-accent/25 text-white rounded-br-sm ml-auto'
                   }`}
                   style={{ overflowWrap: 'anywhere' }}
                 >
-                  {msg.text}
+                  {msg.sender === 'bot' ? <ChatMarkdown text={msg.text} /> : msg.text}
                 </div>
                 {/* Suggestion chips */}
                 {msg.sender === 'bot' &&
@@ -329,15 +423,15 @@ export default function Chatbot() {
               placeholder="Ask me anything..."
               className="flex-1 bg-white/[0.06] text-sm text-white placeholder-gray-500
                 rounded-xl px-4 py-2.5 outline-none
-                focus:ring-1 focus:ring-white/20 transition-shadow"
+                focus:ring-1 focus:ring-accent/60 transition-shadow"
               style={{ minHeight: 44 }}
             />
             <button
               type="submit"
               disabled={!inputValue.trim() || isTyping}
-              className="p-2.5 rounded-xl bg-white/[0.1] text-gray-300
-                hover:bg-white/[0.18] hover:text-white
-                disabled:opacity-30 disabled:hover:bg-white/[0.1]
+              className="p-2.5 rounded-xl bg-accent/25 text-white
+                hover:bg-accent/40
+                disabled:opacity-30 disabled:hover:bg-accent/25
                 transition-colors"
               aria-label="Send message"
               style={{ minWidth: 44, minHeight: 44 }}
@@ -354,15 +448,15 @@ export default function Chatbot() {
         onClick={isOpen ? closePanel : openPanel}
         aria-label="Open chat"
         className="fixed bottom-6 right-6 z-[9998] w-14 h-14 rounded-full
-          bg-white/[0.1] backdrop-blur-sm border border-white/10
+          bg-accent/20 backdrop-blur-sm border border-accent/40
           flex items-center justify-center
-          text-white hover:bg-white/[0.18] transition-colors shadow-lg"
+          text-white hover:bg-accent/30 transition-colors shadow-lg"
         style={{ minWidth: 56, minHeight: 56 }}
       >
         {/* Pulse ring */}
         <span
           ref={pulseRef}
-          className="absolute inset-0 rounded-full border border-white/20 pointer-events-none"
+          className="absolute inset-0 rounded-full border border-accent/40 pointer-events-none"
           aria-hidden="true"
         />
         {isOpen ? (

@@ -122,10 +122,10 @@ const intents = [
     keywords: ['skills', 'technologies', 'tech', 'stack', 'programming', 'languages', 'tools', 'frameworks', 'frontend', 'backend', 'knows'],
     patterns: [/tech\s*stack/i, /what can he (do|build)/i, /what.*skills/i, /technologies/i, /programming/i],
     templates: [
-      `Vipul's tech toolkit is pretty solid! Here's what he works with:\n\n🛠 ${skillsList}\n\nHe's especially strong in React, TypeScript, and Node.js for building production-grade apps.`,
-      `He's got a well-rounded skill set: ${skillsList}. From frontend frameworks like React and Next.js to backend with Node.js and databases like PostgreSQL and MongoDB — he covers the full spectrum.`,
+      `Vipul's tech toolkit is pretty solid! Here's what he works with:\n\n🛠 ${skillsList}\n\nHe's especially strong in React, TypeScript, and Java for building production-grade apps.`,
+      `He's got a well-rounded skill set: ${skillsList}. From React on the frontend to Java and Node.js on the backend, with PostgreSQL, MongoDB and Redis for data — he covers the full spectrum.`,
       `Vipul works across the stack! His key technologies include ${skillsList}. He's particularly experienced with React and TypeScript, having used them extensively at both ${currentRole.company} and ${previousRole.company}. 💪`,
-      `Great question about his tech stack! Vipul is proficient in: ${skillsList}. He also has hands-on experience with Docker, AWS, and design tools like Figma.`,
+      `Great question about his tech stack! Vipul is proficient in: ${skillsList}. He also has hands-on experience with Docker, Redis, Jest and GitHub Actions.`,
     ],
     suggestions: [
       'Tell me about his experience',
@@ -138,10 +138,10 @@ const intents = [
     keywords: ['experience', 'work', 'job', 'company', 'career', 'role', 'worked', 'employment', 'professional'],
     patterns: [/where does he work/i, /current (role|job|position)/i, /work experience/i, /career/i, /employed/i],
     templates: [
-      `Here's Vipul's professional journey:\n\n📌 ${currentRole.title} at ${currentRole.company} (${currentRole.period})\nHe's building scalable web apps with React, TypeScript, and Redux Toolkit, including a Loan Origination System and a payment SDK.\n\n📌 ${previousRole.title} at ${previousRole.company} (${previousRole.period})\nHe developed enterprise-grade frontend apps, optimized performance, and mentored junior developers.`,
+      `Here's Vipul's professional journey:\n\n📌 ${currentRole.title} at ${currentRole.company} (${currentRole.period})\nHe built a multi-tenant onboarding SDK (3 days → 10 minutes), payment flows handling 5L+ daily transactions, and an in-house CRM using React, TypeScript, Java and PostgreSQL.\n\n📌 ${previousRole.title} at ${previousRole.company} (${previousRole.period})\nHe built reusable React components, reached 95%+ test coverage, and cut UI defects by 40%.`,
       `Vipul currently works as a ${currentRole.title} at ${currentRole.company} (since ${currentRole.period.split('—')[0].trim()}). Before that, he was a ${previousRole.title} at ${previousRole.company} for about two years. He's been building complex fintech and enterprise applications throughout his career. 🏢`,
-      `Work-wise, Vipul has solid industry experience:\n\n1️⃣ ${currentRole.company} — ${currentRole.title} (${currentRole.period}): Building fintech platforms, payment SDKs, and loan management systems.\n\n2️⃣ ${previousRole.company} — ${previousRole.title} (${previousRole.period}): Worked on enterprise dashboards, reusable component libraries, and API integrations.`,
-      `Vipul's currently a ${currentRole.title} at ${currentRole.company}, where he builds production-grade fintech applications. Previously, he spent two years at ${previousRole.company} as a ${previousRole.title}, working on enterprise apps and mentoring junior devs. He's got a strong track record of shipping reliable software.`,
+      `Work-wise, Vipul has solid industry experience:\n\n1️⃣ ${currentRole.company} — ${currentRole.title} (${currentRole.period}): Onboarding SDK, payment integrations, an in-house CRM, and Java/Redis backend services.\n\n2️⃣ ${previousRole.company} — ${previousRole.title} (${previousRole.period}): Scalable React components, 95%+ test coverage, and faster builds with Webpack and Babel.`,
+      `Vipul's currently a ${currentRole.title} at ${currentRole.company}, where he builds production-grade fintech applications. Previously, he spent two years at ${previousRole.company} as a ${previousRole.title}, working on enterprise React apps and testing. He's got a strong track record of shipping reliable software.`,
     ],
     suggestions: [
       'What technologies does he use?',
@@ -315,7 +315,11 @@ function detectIntent(input) {
 
   // 2. Try exact keyword matching
   for (const intent of intents) {
-    if (intent.keywords.some((kw) => cleaned.includes(kw))) {
+    if (
+      intent.keywords.some((kw) =>
+        kw.length <= 3 ? words.includes(kw) : cleaned.includes(kw),
+      )
+    ) {
       return intent;
     }
   }
